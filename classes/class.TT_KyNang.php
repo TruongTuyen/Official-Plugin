@@ -1,6 +1,6 @@
 <?php
 class TT_KyNang extends WP_List_Table{
-     function __construct(){
+    function __construct(){
         global $status, $page;
         parent::__construct(
             array(
@@ -24,8 +24,8 @@ class TT_KyNang extends WP_List_Table{
     
     public function column_tenkynang( $item ){
         $actions = array(
-            'edit'   => sprintf( '<a href="?page=new_kynang&id_kynang=%s">%s</a>', $item['id_kynang'], __( 'Sửa', 'simple_plugin' ) ),
-            'delete' => sprintf( '<a href="?page=%s&action=delete&id_kynang=%s">%s</a>', $_REQUEST['page'], $item['id_kynang'], __( 'Xóa', 'simple_plugin' ) )
+            'edit'   => sprintf( '<a href="?page=new_kynang&id_kynang=%s">%s</a>', $item['id_kynang'], __( 'Sửa dữ liệu', 'simple_plugin' ) ),
+            'delete' => sprintf( '<a href="?page=%s&action=delete&id_kynang=%s">%s</a>', $_REQUEST['page'], $item['id_kynang'], __( 'Xóa dữ liệu', 'simple_plugin' ) )
         );
         return sprintf( "%s %s", $item['tenkynang'], $this->row_actions( $actions ) );
     }
@@ -83,7 +83,7 @@ class TT_KyNang extends WP_List_Table{
         $this->_column_headers = array( $colums, $hidden, $sortable );
         $this->process_bulk_action();
         
-        $total_records = $wpdb->get_var( "SELECT COUNT(id_kynang) FROM $table_name" );//lấy tổng số bản ghi để có thể tính toán phân trang
+        $total_items = $wpdb->get_var( "SELECT COUNT(id_kynang) FROM $table_name" );//lấy tổng số bản ghi để có thể tính toán phân trang
         
         //Tính toán các tham số cần thiết
         $paged   = isset( $_REQUEST['paged'] ) ? max( 0, intval( $_REQUEST['paged']) - 1 ) : 0;
@@ -98,7 +98,7 @@ class TT_KyNang extends WP_List_Table{
             array(
                 'total_items' => $total_items, 
                 'per_page'    => $per_page, 
-                'total_pages' => ceil($total_items / $per_page) 
+                'total_pages' => ceil( $total_items / $per_page ) 
             )
         );
         
@@ -106,11 +106,12 @@ class TT_KyNang extends WP_List_Table{
     }
     
     public function tt_kynang_page_callback(){ //Hàm xử lý page list tất cả các kỹ năng
+        global $wpdb;
         $kynang = new TT_KyNang();
         $kynang->prepare_items();
         $message = '';
         
-        if( $kynang->current_action() ){
+        if( $kynang->current_action() == 'delete' ){
             $message = '<div class="updated below-h2" id="message"><p>' . sprintf(__('Số bản ghi đã xóa: %d', 'simple_plugin'), count( $_REQUEST['id_kynang']) ) . '</p></div>';
         }
     ?>    
@@ -123,7 +124,7 @@ class TT_KyNang extends WP_List_Table{
         
             <form id="persons-table" method="GET">
                 <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>"/>
-                <?php $kynang->display() ?>
+                <?php $kynang->display(); ?>
             </form>
         
         </div>
@@ -145,7 +146,7 @@ class TT_KyNang extends WP_List_Table{
         
         if( wp_verify_nonce( $_REQUEST['nonce'], basename( __FILE__) )){
             $item = shortcode_atts($default, $_REQUEST);
-            $item_valid = $this->tt_kynang_validate_data( $item );
+            $item_valid = self::tt_kynang_validate_data( $item );
             
             if( $item_valid == true ){
                 if( $item['id_kynang'] == 0 ){ //Thêm mới dl
@@ -173,7 +174,7 @@ class TT_KyNang extends WP_List_Table{
         }else{
             $item = $default;
             if( isset( $_REQUEST['id_kynang'] )){
-                $item = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $_REQUEST['id_kynang'] ), ARRAY_A );
+                $item = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id_kynang = %d", $_REQUEST['id_kynang'] ), ARRAY_A );
                 if( empty( $item ) ){
                     $item   = $default;
                     $notice = __( "Không tìm thấy dữ liệu ", "simple_plugin" );
@@ -183,15 +184,65 @@ class TT_KyNang extends WP_List_Table{
         ?>
         <div class="wrap">
             <div class="icon32 icon32-posts-post" id="icon-edit"><br /></div>
-            <h2><?php _e( "Kỹ năng", "simple_plugin" ); ?>
-                <a class="add-new-h2" href="<?php echo get_admin_url( get_current_blog_id(), 'admin.php?page=new_kynang' ); ?>"></a>
+            <h2><?php _e( "Thêm mới kỹ năng", "simple_plugin" ); ?>
+                <a class="add-new-h2" href="<?php echo get_admin_url( get_current_blog_id(), 'admin.php?page=ds_ky_nang' ); ?>"><?php _e( "Danh sách kỹ năng", "simple_plugin" ); ?></a>
             </h2>
+            <?php if( !empty( $notice ) ) { ?>
+                <div id="notice" class="error"><p><?php echo $notice; ?></p></div>
+            <?php } ?>
+            
+            <?php if( !empty( $message ) ){ ?>
+                <div id="message" class="updated"><p><?php echo $message; ?></p></div>
+            <?php } ?>
+            
+            <form id="form" method="post">
+                <input type="hidden" name="nonce" value="<?php echo wp_create_nonce( basename(__FILE__) );?>" />
+                <input type="hidden" name="id" value="<?php echo $item['id_kynang'] ?>" />
+                <div class="metabox-holder" id="poststuff">
+                    <div id="post-body"> 
+                        <div id="post-body-content">
+                            <table cellspacing="2" cellpadding="5" style="width: 100%;" class="form-table">
+                                <tbody>
+                                    <tr class="form-field">
+                                        <th valign="top" scope="row">
+                                            <label for="tenkynang"><?php _e( "Tên kỹ năng", "simple_plugin" ); ?></label>
+                                        </th>
+                                        <td>
+                                            <input name="tenkynang" id="tenkynang" type="text" style="width:95%;" value="<?php if( !empty( $item['tenkynang'] ) ){ echo esc_attr( $item['tenkynang'] ); }?>" class="code" required />
+                                        </td>
+                                    </tr>
+                                    <tr class="form-field">
+                                        <th valign="top" scope="row">
+                                            <label for="chuthich"><?php _e( "Chú thích", "simple_plugin" ); ?></label>
+                                        </th>
+                                        <td>
+                                            <textarea name="chuthich" id="chuthich" style="width:95%;padding:0;"><?php if( !empty( $item['chuthich'] ) ){ echo trim( esc_attr( $item['chuthich'] ) ); } ?></textarea>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <input type="submit" value="<?php _e( "Gửi", "simple_plugin" ); ?>" id="submit" class="button-primary" name="submit" />
+                        </div>
+                    </div>
+                </div>
+            
+            </form>
+            
         </div>
 <?php        
         
     }
     
-    public function tt_kynang_validate_data( $item ){
+    public static function tt_kynang_validate_data( $item ){
+        $message = array();
+        if( empty( $item['tenkynang'] ) ){
+            $message[] = __( "Vui lòng nhập vào tên kỹ năng.", "simple_plugin" );
+        } 
+        if( empty( $message ) ){ 
+            return true; 
+        }else{
+            return implode( "<br/>", $message );
+        }
         
     }
     
