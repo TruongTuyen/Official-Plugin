@@ -150,7 +150,7 @@ class TT_Nhanvien extends WP_List_Table{
         $table_name = $wpdb->prefix . 'nhanvien'; 
         $message = '';
         $notice = '';
-    
+        
         $default = array(
             'id_nhanvien'       => 0,
             'hoten'             => '',
@@ -195,6 +195,14 @@ class TT_Nhanvien extends WP_List_Table{
                 }
             }
         }
+        
+        /** GET Duan Info, KyNang Info **/
+        $table_duan       = $wpdb->prefix . 'duan';
+        $table_kynang     = $wpdb->prefix . 'kynang';
+        $item['cac_duan']   = $wpdb->get_results( "SELECT id_duan, tenduan FROM {$table_duan}", ARRAY_A );
+        $item['cac_kynang'] = $wpdb->get_results( "SELECT id_kynang, tenkynang FROM {$table_kynang}", ARRAY_A );;
+        
+        /** END GET Duan Info, KyNang Info  **/
         ?>
         <div class="wrap">
             <div class="icon32 icon32-posts-post" id="icon-edit"><br></div>
@@ -258,11 +266,10 @@ class TT_Nhanvien extends WP_List_Table{
                                             <label for="cac_duan"><?php _e( 'Các dự án', 'simple_plugin' ); ?></label>
                                         </th>
                                         <td>
-                                            <select id="cac_duan" name="cac_duan" class="code">
-                                                <option value="Đã hoàn thành" <?php if( !empty( $item['trangthai']) ){ TT_Teamwork::tt_selected( $item['trangthai'], 'Đã hoàn thành' ); }?> >Đã hoàn thành</option>
-                                                <option value="Đang triển khai" <?php if( empty( $item['trangthai'] ) ){ echo 'selected="selected"'; }else{ TT_Teamwork::tt_selected( $item['trangthai'], 'Đang triển khai' ); } ?> >Đang triển khai</option>
-                                                <option value="Chưa hoàn thành" <?php if( !empty( $item['trangthai']) ){ TT_Teamwork::tt_selected( $item['trangthai'], 'Chưa hoàn thành' ); } ?> >Chưa hoàn thành</option>
-                                                <option value="Đã hủy" <?php if( !empty( $item['trangthai']) ){ TT_Teamwork::tt_selected( $item['trangthai'], 'Đã hủy' ); } ?> >Đã hủy</option>
+                                            <select id="cac_duan" name="cac_duan" data-placeholder="Chọn dự án" class="chosen-select" multiple style="width:95%;" tabindex="4">
+                                                <?php foreach( $item['cac_duan'] as $key=>$value ){ ?>
+                                                    <option value="<?php echo $value['id_duan']; ?>"><?php echo $value['tenduan']; ?></option>
+                                                <?php } ?>
                                             </select>
                                         </td>
                                     </tr> 
@@ -271,11 +278,10 @@ class TT_Nhanvien extends WP_List_Table{
                                             <label for="cac_kynang"><?php _e( 'Các kỹ năng', 'simple_plugin' ); ?></label>
                                         </th>
                                         <td>
-                                            <select id="cac_kynang" name="cac_kynang" class="code">
-                                                <option value="Đã hoàn thành" <?php if( !empty( $item['trangthai']) ){ TT_Teamwork::tt_selected( $item['trangthai'], 'Đã hoàn thành' ); }?> >Đã hoàn thành</option>
-                                                <option value="Đang triển khai" <?php if( empty( $item['trangthai'] ) ){ echo 'selected="selected"'; }else{ TT_Teamwork::tt_selected( $item['trangthai'], 'Đang triển khai' ); } ?> >Đang triển khai</option>
-                                                <option value="Chưa hoàn thành" <?php if( !empty( $item['trangthai']) ){ TT_Teamwork::tt_selected( $item['trangthai'], 'Chưa hoàn thành' ); } ?> >Chưa hoàn thành</option>
-                                                <option value="Đã hủy" <?php if( !empty( $item['trangthai']) ){ TT_Teamwork::tt_selected( $item['trangthai'], 'Đã hủy' ); } ?> >Đã hủy</option>
+                                            <select id="cac_kynang" name="cac_kynang" class="code" data-placeholder="Chọn kỹ năng" multiple style="width:95%;" tabindex="4">
+                                                <?php foreach( $item['cac_kynang'] as $key=>$value ){ ?>    
+                                                    <option value="<?php  echo $value['id_kynang']; ?>"><?php echo $value['tenkynang']; ?></option>
+                                                <?php } ?>
                                             </select>
                                         </td>
                                     </tr>

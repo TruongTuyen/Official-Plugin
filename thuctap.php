@@ -247,13 +247,15 @@ class TT_Teamwork{
 new TT_Teamwork();
 
 function enqueue_script(){
-    wp_enqueue_script( 'jquery_min', TT_DIR_URL . 'assets/js/jquery.min.js', array('jquery'), null, true );    
+    wp_enqueue_script( 'jquery_min', TT_DIR_URL . 'assets/js/jquery-1.12.3.min.js', array('jquery'), null, true );    
     wp_enqueue_script( 'jquery_ui', TT_DIR_URL . 'assets/js/jquery-ui.min.js', array('jquery'), null, true );
+    wp_enqueue_script( 'jquer_choosen', TT_DIR_URL . 'assets/js/chosen.jquery.min.js', array('jquery'), null, true );
     wp_enqueue_script( 'jquery_function', TT_DIR_URL . 'assets/js/function.js', array('jquery'), null, true );
     
     wp_enqueue_style( 'jquery-ui-css', TT_DIR_URL . 'assets/css/jquery-ui.min.css', false, '' );
     wp_enqueue_style( 'jquery-ui-theme-css', TT_DIR_URL . 'assets/css/jquery-ui.theme.min.css', false, '' );
     wp_enqueue_style( 'jquery-ui-structure-css', TT_DIR_URL . 'assets/css/jquery-ui.structure.min.css', false, '' );
+    wp_enqueue_style( 'choosen.min.js', TT_DIR_URL . 'assets/css/chosen.min.css', false, '' );
 }
 add_action( 'admin_enqueue_scripts', 'enqueue_script' );
 
