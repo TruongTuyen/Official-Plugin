@@ -13,8 +13,9 @@ define( TT_DIR_PATH, plugin_dir_path( __FILE__ ) ); //Lấy ra dường dẫn tu
 define( TT_DIR_URL, plugin_dir_url( __FILE__ ) ); //Lấy ra url của plugin này
 
 require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );//sử dụng file này để có thể dùng hàm dbDelta();
-require_once TT_DIR_PATH . 'classes/class.TT_KyNang.php'; 
-require_once TT_DIR_PATH . 'classes/class.TT_Nhanvien.php';
+require_once TT_DIR_PATH . 'classes/class.TT_KyNang.php';  //Class Ky Nang xu ly thong tin liên quan den ky nang
+require_once TT_DIR_PATH . 'classes/class.TT_Nhanvien.php';//Class Nhan Vien xu ly thong tin lien quan den nhan vien
+require_once TT_DIR_PATH . 'classes/class.TT_Duan.php';//Class Du An xu ly thong tin lien quan den du an
 
 if (!class_exists('WP_List_Table')) {
     require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
@@ -40,6 +41,7 @@ class TT_Teamwork{
                 tenduan VARCHAR(225) NOT NULL,
                 thoigianbatdau DATETIME NOT NULL,
                 thoigianketthuc DATETIME NOT NULL,
+                trangthai VARCHAR(225) NOT NULL,
                 ghichu TEXT NULL,
                 PRIMARY KEY (id_duan)   
             );
@@ -114,6 +116,7 @@ class TT_Teamwork{
             'tenduan'            => 'Website Ban Hang 01',
             'thoigianbatdau'     => '2015-10-16',
             'thoigianketthuc'    => '2015-11-16',
+            'trangthai'          => 'Đã hoàn thành', // Đã hoàn thành, Đang triển khai, Chưa hoàn thành, Đã hủy   
             'ghichu'             => null   
         ));
         $wpdb->insert( $wpdb->prefix . 'duan', array(
@@ -121,6 +124,7 @@ class TT_Teamwork{
             'tenduan'            => 'Website Ban Hang 02',
             'thoigianbatdau'     => '2015-11-10',
             'thoigianketthuc'    => '2015-12-10',
+            'trangthai'          => 'Đang triển khai',
             'ghichu'             => 'ghi chu 01'   
         ));
         
@@ -223,15 +227,36 @@ class TT_Teamwork{
         add_submenu_page( 'tt_teamwork', __( "Danh sách kỹ năng", "simple_plugin" ), __( "Danh sách kỹ năng", "simple_plugin" ), "activate_plugins", "ds_ky_nang", array( "TT_KyNang", "tt_kynang_page_callback" ) );
         add_submenu_page( 'tt_teamwork', __( "Thêm mới kỹ năng", "simple_plugin" ), __( "Thêm mới kỹ năng", "simple_plugin" ), "activate_plugins", "new_kynang", array( "TT_KyNang", "tt_new_kynang_callback" ) );
     
-    
+        add_submenu_page( 'tt_teamwork', __( "Danh sách dự án", "simple_plugin" ), __( "Danh sách dự án", "simple_plugin" ), "activate_plugins", "ds_duan", array( "TT_Duan", "tt_duan_page_callback") );
+        add_submenu_page( 'tt_teamwork', __( "Thêm mới dự án", "simple_plugin" ), __( "Thêm mới dự án", "simple_plugin" ), "activate_plugins", "new_duan", array( "TT_Duan", "tt_new_duan_page_callback") );
     }
     
     public function tt_load_languages(){
         load_plugin_textdomain( 'simple_plugin', false, dirname(plugin_basename(__FILE__) ));
     }
+    
+    public static function tt_selected( $select, $value ){
+        if( isset( $select ) && !empty( $select ) ){
+            if( $select == $value){
+                echo 'selected="selected"';
+            }
+        }
+    }
 }
 
 new TT_Teamwork();
+
+function enqueue_script(){
+    wp_enqueue_script( 'jquery_min', TT_DIR_URL . 'assets/js/jquery.min.js', array('jquery'), null, true );    
+    wp_enqueue_script( 'jquery_ui', TT_DIR_URL . 'assets/js/jquery-ui.min.js', array('jquery'), null, true );
+    wp_enqueue_script( 'jquery_function', TT_DIR_URL . 'assets/js/function.js', array('jquery'), null, true );
+    
+    wp_enqueue_style( 'jquery-ui-css', TT_DIR_URL . 'assets/css/jquery-ui.min.css', false, '' );
+    wp_enqueue_style( 'jquery-ui-theme-css', TT_DIR_URL . 'assets/css/jquery-ui.theme.min.css', false, '' );
+    wp_enqueue_style( 'jquery-ui-structure-css', TT_DIR_URL . 'assets/css/jquery-ui.structure.min.css', false, '' );
+}
+add_action( 'admin_enqueue_scripts', 'enqueue_script' );
+
 
 
 
