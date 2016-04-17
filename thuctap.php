@@ -49,8 +49,8 @@ class TT_Teamwork{
             CREATE TABLE {$wpdb->prefix}nhanvien( 
                 id_nhanvien BIGINT NOT NULL AUTO_INCREMENT , 
                 hoten VARCHAR(225) NOT NULL , 
-                namsinh DATETIME NOT NULL , 
-                gioitinh TINYINT(2) NOT NULL ,
+                namsinh VARCHAR(4) NOT NULL , 
+                gioitinh VARCHAR(3) NOT NULL ,
                 quequan VARCHAR(225) NOT NULL , 
                 PRIMARY KEY (id_nhanvien)
             );
@@ -66,7 +66,6 @@ class TT_Teamwork{
                 id BIGINT NOT NULL AUTO_INCREMENT,
                 id_duan BIGINT NOT NULL,
                 id_nhanvien BIGINT NOT NULL,
-                ghichu TEXT NULL,
                 PRIMARY KEY (id)
             );
             
@@ -74,7 +73,6 @@ class TT_Teamwork{
                 id BIGINT NOT NULL AUTO_INCREMENT,
                 id_kynang BIGINT NOT NULL,
                 id_nhanvien BIGINT NOT NULL,
-                ghichu TEXT NULL,
                 PRIMARY KEY (id)
             ); 
         ";
@@ -131,16 +129,16 @@ class TT_Teamwork{
         //du lieu mau cho bang _nhanvien
         $wpdb->insert( $wpdb->prefix . 'nhanvien', array(
             'id_nhanvien'       => 1, 
-            'hoten'             => 'Nguyen Van A', 
-            'namsinh'           => '1990-01-01', 
-            'gioitinh'          => 1,//quy uoc: gia tri: 1 <=> Nam, 2 <=> Nu,
+            'hoten'             => 'Nguyen Van An', 
+            'namsinh'           => '1990', 
+            'gioitinh'          => "Nam",
             'quequan'           => 'Thai Nguyen', 
         ));
         $wpdb->insert( $wpdb->prefix . 'nhanvien', array(
             'id_nhanvien'       => 2, 
-            'hoten'             => 'Nguyen Van B', 
-            'namsinh'           => '1991-01-01', 
-            'gioitinh'          => 1,//quy uoc: gia tri: 1 <=> Nam, 2 <=> Nu,
+            'hoten'             => 'Nguyen Thị Ba', 
+            'namsinh'           => '1991', 
+            'gioitinh'          => "Nữ",
             'quequan'           => 'Thai Binh', 
         ));
         
@@ -166,25 +164,21 @@ class TT_Teamwork{
             'id'                => 1,
         	'id_duan'           => 1,
         	'id_nhanvien'       => 1,
-        	'ghichu'            => 'Ghi chu 01',
         ));
         $wpdb->insert( $wpdb->prefix . 'chitiet_duan', array(
             'id'                => 2,
         	'id_duan'           => 1,
         	'id_nhanvien'       => 2,
-        	'ghichu'            => 'Ghi chu 02',
         ));
         $wpdb->insert( $wpdb->prefix . 'chitiet_duan', array(
             'id'                => 3,
         	'id_duan'           => 2,
         	'id_nhanvien'       => 1,
-        	'ghichu'            => 'Ghi chu 01',
         ));
         $wpdb->insert( $wpdb->prefix . 'chitiet_duan', array(
             'id'                => 4,
         	'id_duan'           => 2,
         	'id_nhanvien'       => 2,
-        	'ghichu'            => 'Ghi chu 02',
         ));
         
         //du lieu cho bang _chitiet_kynang
@@ -198,19 +192,16 @@ class TT_Teamwork{
             'id'                => 2,
     	    'id_kynang'         => 2,
     	    'id_nhanvien'       => 1,
-        	'ghichu'            => "Ghi chu 02"
         ));
         $wpdb->insert( $wpdb->prefix . 'chitiet_kynang', array(
             'id'                => 3,
     	    'id_kynang'         => 1,
     	    'id_nhanvien'       => 2,
-        	'ghichu'            => "Ghi chu 03"
         ));
         $wpdb->insert( $wpdb->prefix . 'chitiet_kynang', array(
             'id'                => 4,
     	    'id_kynang'         => 2,
     	    'id_nhanvien'       => 2,
-        	'ghichu'            => "Ghi chu 04"
         ));
     }  
     

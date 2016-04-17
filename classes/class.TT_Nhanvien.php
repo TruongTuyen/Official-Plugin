@@ -157,29 +157,68 @@ class TT_Nhanvien extends WP_List_Table{
             'namsinh'           => '',
             'gioitinh'          => '',
             'quequan'           => '',
-            'cac_duan'          => '',
-            'cac_kynang'        => ''
         );
         if ( wp_verify_nonce( $_REQUEST['nonce'], basename(__FILE__)) ) {
             $item = shortcode_atts( $default, $_REQUEST );
-            
+            $namsinh = $item['namsinh'];
+            echo "<pre>";
+            print_r( $item );
+            echo "</pre>";
             $item_valid = self::tt_validate_data_nhanvien( $item );
             if ( $item_valid === true ) {
                 if ( $item['id_nhanvien'] == 0 ) {
+                    echo "Them moi du lieu";
                     $result = $wpdb->insert( $table_name, $item );
                     $item['id_nhanvien'] = $wpdb->insert_id;
+                    echo "<br/>ID nhan vien: " . $item['id_nhanvien'];
+                    /**
+                    if( !empty( $item['cac_duan'] ) ){
+                        foreach( $item['cac_duan'] as $key=>$value ){
+                            $wpdb->insert( $wpdb->prefix . 'chitiet_duan', array(
+                            	'id_duan'           => $value,
+                            	'id_nhanvien'       => $item['id_nhanvien'],
+                            ));
+                        }
+                    }
+                    
+                    if( !empty( $item['cac_kynang'] ) ){
+                        foreach( $item['cac_kynang'] as $key=>$value ){
+                            $wpdb->insert( $wpdb->prefix . 'chitiet_kynang', array(
+                            	'id_kynang'         => $value,
+                            	'id_nhanvien'       => $item['id_nhanvien'],
+                            ));
+                        }
+                    }
+                    **/
+                    /**
+                    $wpdb->insert( $wpdb->prefix . 'chitiet_duan', array(
+                    	'id_duan'           => 1,
+                    	'id_nhanvien'       => 1,
+                    	'ghichu'            => 'Ghi chu 01',
+                    ));
+                    
+                    
                     if ( $result ) {
                         $message = __( 'Thêm dữ liệu thành công', 'simple_plugin' );
                     } else {
                         $notice = __( 'Xảy ra lỗi trong quá trình thêm dữ liệu', 'simple_plugin' );
                     }
+                    **/
+                    
                 } else {
+                    echo "<pre>";
+                    echo "Id nhan vien != 0";
+                    print_r( $item );
+                    echo "</pre>";
+                    /**
                     $result = $wpdb->update( $table_name, $item, array( 'id_nhanvien' => $item['id_nhanvien']) );
                     if ( $result ) {
                         $message = __( 'Cập nhật dữ liêu thành công', 'simple_plugin' );
                     } else {
                         $notice = __( 'Xảy ra lỗi trong quá trình cập nhật dữ liệu', 'simple_plugin' );
                     }
+                    **/
+                    
                 }
             } else {
                 $notice = $item_valid;
@@ -249,8 +288,8 @@ class TT_Nhanvien extends WP_List_Table{
                                             <label for="gioitinh"><?php _e( 'Giới tính', 'simple_plugin' ); ?></label>
                                         </th>
                                         <td>
-                                            <input type="radio" name="gioitinh" id="nam" value="Nam" <?php if( empty( $item['gioitinh'] ) ){ echo 'checked="checked"'; }else{  TT_Teamwork::tt_selected( $item['gioitinh'], "Nam" ); } ?> />Nam
-                                            <input type="radio" name="gioitinh" id="nu" value="Nữ" accept="<?php if( !empty( $item['gioitinh']) ){ TT_Teamwork::tt_selected( $item['gioitinh'], "Nữ" ); } ?>" />Nữ
+                                            <input type="radio" name="gioitinh" id="Nam" value="Nam" <?php if( empty( $item['gioitinh'] ) ){ echo 'checked="checked"'; }else{  TT_Teamwork::tt_selected( $item['gioitinh'], "Nam" ); } ?> />Nam
+                                            <input type="radio" name="gioitinh" id="Nữ" value="Nữ" accept="<?php if( !empty( $item['gioitinh']) ){ TT_Teamwork::tt_selected( $item['gioitinh'], "Nữ" ); } ?>" />Nữ
                                         </td>
                                     </tr>
                                     <tr class="form-field">
@@ -266,7 +305,7 @@ class TT_Nhanvien extends WP_List_Table{
                                             <label for="cac_duan"><?php _e( 'Các dự án', 'simple_plugin' ); ?></label>
                                         </th>
                                         <td>
-                                            <select id="cac_duan" name="cac_duan" data-placeholder="Chọn dự án" class="chosen-select" multiple style="width:95%;" tabindex="4">
+                                            <select id="chon_cac_duan" name="cac_duan[]" data-placeholder="Chọn dự án" class="chosen-select" multiple style="width:95%;" tabindex="4">
                                                 <?php foreach( $item['cac_duan'] as $key=>$value ){ ?>
                                                     <option value="<?php echo $value['id_duan']; ?>"><?php echo $value['tenduan']; ?></option>
                                                 <?php } ?>
@@ -278,7 +317,7 @@ class TT_Nhanvien extends WP_List_Table{
                                             <label for="cac_kynang"><?php _e( 'Các kỹ năng', 'simple_plugin' ); ?></label>
                                         </th>
                                         <td>
-                                            <select id="cac_kynang" name="cac_kynang" class="code" data-placeholder="Chọn kỹ năng" multiple style="width:95%;" tabindex="4">
+                                            <select id="chon_cac_kynang" name="cac_kynang[]" class="code" data-placeholder="Chọn kỹ năng" multiple style="width:95%;" tabindex="4">
                                                 <?php foreach( $item['cac_kynang'] as $key=>$value ){ ?>    
                                                     <option value="<?php  echo $value['id_kynang']; ?>"><?php echo $value['tenkynang']; ?></option>
                                                 <?php } ?>
