@@ -233,6 +233,14 @@ class TT_Teamwork{
             }
         }
     }
+    
+    public static function tt_checked( $check, $value ){
+        if( isset( $check ) && !empty( $check ) ){
+            if( $check == $value){
+                echo 'checked="checked"';
+            }
+        }
+    }
 }
 
 new TT_Teamwork();
