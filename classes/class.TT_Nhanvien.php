@@ -134,7 +134,7 @@ class TT_Nhanvien extends WP_List_Table{
 ?>
     <div class="wrap">
         <div class="icon32 icon32-posts-post" id="icon-edit"><br></div>
-        <h2><?php _e( 'Danh sách nhân viên', 'simple_plugin' )?> <a class="add-new-h2" href="<?php echo get_admin_url( get_current_blog_id(), 'admin.php?page=new_duan');?>"><?php _e( 'Thêm mới nhân viên', 'simple_plugin' )?></a></h2>
+        <h2><?php _e( 'Danh sách nhân viên', 'simple_plugin' )?> <a class="add-new-h2" href="<?php echo get_admin_url( get_current_blog_id(), 'admin.php?page=new_nhanvien');?>"><?php _e( 'Thêm mới nhân viên', 'simple_plugin' )?></a></h2>
         <?php echo $message; ?>
         <form id="nhanvien-table" method="GET">
             <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>"/>
@@ -160,42 +160,36 @@ class TT_Nhanvien extends WP_List_Table{
         );
         if ( wp_verify_nonce( $_REQUEST['nonce'], basename(__FILE__)) ) {
             $item = shortcode_atts( $default, $_REQUEST );
-            $namsinh = $item['namsinh'];
+            $ids_duan   = $_REQUEST['cac_duan'];
+            $ids_kynang = $_REQUEST['cac_kynang'];
             echo "<pre>";
-            print_r( $item );
+            print_r( $_REQUEST );
             echo "</pre>";
             $item_valid = self::tt_validate_data_nhanvien( $item );
             if ( $item_valid === true ) {
                 if ( $item['id_nhanvien'] == 0 ) {
-                    echo "Them moi du lieu";
                     $result = $wpdb->insert( $table_name, $item );
                     $item['id_nhanvien'] = $wpdb->insert_id;
-                    echo "<br/>ID nhan vien: " . $item['id_nhanvien'];
-                    /**
-                    if( !empty( $item['cac_duan'] ) ){
-                        foreach( $item['cac_duan'] as $key=>$value ){
+                    
+                    if( !empty( $ids_duan ) ){
+                        foreach( $ids_duan as $key=>$value ){
                             $wpdb->insert( $wpdb->prefix . 'chitiet_duan', array(
+                                'id'                => 0,
                             	'id_duan'           => $value,
                             	'id_nhanvien'       => $item['id_nhanvien'],
                             ));
                         }
                     }
                     
-                    if( !empty( $item['cac_kynang'] ) ){
-                        foreach( $item['cac_kynang'] as $key=>$value ){
+                    if( !empty( $ids_kynang ) ){
+                        foreach( $ids_kynang as $key=>$value ){
                             $wpdb->insert( $wpdb->prefix . 'chitiet_kynang', array(
+                                'id'                => 0,
                             	'id_kynang'         => $value,
                             	'id_nhanvien'       => $item['id_nhanvien'],
                             ));
                         }
                     }
-                    **/
-                    /**
-                    $wpdb->insert( $wpdb->prefix . 'chitiet_duan', array(
-                    	'id_duan'           => 1,
-                    	'id_nhanvien'       => 1,
-                    	'ghichu'            => 'Ghi chu 01',
-                    ));
                     
                     
                     if ( $result ) {
@@ -203,7 +197,7 @@ class TT_Nhanvien extends WP_List_Table{
                     } else {
                         $notice = __( 'Xảy ra lỗi trong quá trình thêm dữ liệu', 'simple_plugin' );
                     }
-                    **/
+                    
                     
                 } else {
                     echo "<pre>";
@@ -245,7 +239,7 @@ class TT_Nhanvien extends WP_List_Table{
         ?>
         <div class="wrap">
             <div class="icon32 icon32-posts-post" id="icon-edit"><br></div>
-            <h2><?php _e( 'Thêm mới nhân viên', 'simple_plugin')?> <a class="add-new-h2" href="<?php echo get_admin_url( get_current_blog_id(), 'admin.php?page=ds_duan');?>"><?php _e( 'Danh sách nhân viên', 'simple_plugin' ); ?></a></h2>
+            <h2><?php _e( 'Thêm mới nhân viên', 'simple_plugin')?> <a class="add-new-h2" href="<?php echo get_admin_url( get_current_blog_id(), 'admin.php?page=ds_nhanvien');?>"><?php _e( 'Danh sách nhân viên', 'simple_plugin' ); ?></a></h2>
             <?php if ( !empty( $notice ) ){ ?>
                 <div id="notice" class="error"><p><?php echo $notice ?></p></div>
             <?php }// !empty( $notice ) ?>

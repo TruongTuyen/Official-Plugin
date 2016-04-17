@@ -111,7 +111,7 @@ class TT_Teamwork{
         global $wpdb;
         $wpdb->insert( $wpdb->prefix . 'duan', array(
             'id_duan'            => 1,
-            'tenduan'            => 'Website Ban Hang 01',
+            'tenduan'            => 'Website bán hàng 01',
             'thoigianbatdau'     => '2015-10-16',
             'thoigianketthuc'    => '2015-11-16',
             'trangthai'          => 'Đã hoàn thành', // Đã hoàn thành, Đang triển khai, Chưa hoàn thành, Đã hủy   
@@ -119,7 +119,7 @@ class TT_Teamwork{
         ));
         $wpdb->insert( $wpdb->prefix . 'duan', array(
             'id_duan'            => 2,
-            'tenduan'            => 'Website Ban Hang 02',
+            'tenduan'            => 'Website bán hàng 02',
             'thoigianbatdau'     => '2015-11-10',
             'thoigianketthuc'    => '2015-12-10',
             'trangthai'          => 'Đang triển khai',
