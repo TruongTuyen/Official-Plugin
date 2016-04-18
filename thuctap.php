@@ -241,6 +241,7 @@ class TT_Teamwork{
             }
         }
     }
+    
 }
 
 new TT_Teamwork();

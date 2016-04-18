@@ -87,11 +87,12 @@ class TT_KyNang extends WP_List_Table{
         
         //Tính toán các tham số cần thiết
         $paged   = isset( $_REQUEST['paged'] ) ? max( 0, intval( $_REQUEST['paged']) - 1 ) : 0;
+        $offset  = $paged * $per_page;
         $orderby = (isset($_REQUEST['orderby']) && in_array($_REQUEST['orderby'], array_keys($this->get_sortable_columns()))) ? $_REQUEST['orderby'] : 'id_kynang';
         $order   = (isset($_REQUEST['order']) && in_array($_REQUEST['order'], array('asc', 'desc'))) ? $_REQUEST['order'] : 'asc';
     
         $this->items = $wpdb->get_results( $wpdb->prepare(
-            "SELECT * FROM $table_name ORDER BY $orderby $order LIMIT %d OFFSET %d", $per_page, $paged
+            "SELECT * FROM $table_name ORDER BY $orderby $order LIMIT %d OFFSET %d", $per_page, $offset
         ), ARRAY_A );
         
         $this->set_pagination_args(
