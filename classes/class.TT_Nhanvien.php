@@ -11,9 +11,7 @@ class TT_Nhanvien extends WP_List_Table{
         
         
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_script' ) );
-        /** ============================= **/
-        $this->prepare_items();
-        /** ============================= **/
+        
         
     }
     
@@ -61,9 +59,9 @@ class TT_Nhanvien extends WP_List_Table{
     }
 
     function column_cb( $item ){
-        return sprintf( '<input type="checkbox" name="id[]" value="%s" />', $item['id_duan'] );
+        return sprintf( '<input type="checkbox" name="ids[]" value="%d" />', $item['id_nhanvien'] );
     }
-
+    
     function get_columns()
     {
         $columns = array(
@@ -97,16 +95,26 @@ class TT_Nhanvien extends WP_List_Table{
 
     function process_bulk_action(){
         global $wpdb;
-        $table_name = $wpdb->prefix . 'nhanvien'; 
+        $table_nhanvien       = $wpdb->prefix . 'nhanvien'; 
+        $table_chitiet_duan   = $wpdb->prefix . 'chitiet_duan';
+        $table_chitiet_kynang = $wpdb->prefix . 'chitiet_kynang';
 
-        if ( 'delete' === $this->current_action() ) {
-            $ids = isset($_REQUEST['id_nhanvien']) ? $_REQUEST['id_nhanvien'] : array();
-            if (is_array($ids)) {
+        if ( 'delete' === $this->current_action() && $_REQUEST['page'] == "ds_nhanvien" ) {
+            $ids         = isset( $_REQUEST['ids'] ) ? $_REQUEST['ids'] : array();
+            $id_nhanvien = isset( $_REQUEST['id_nhanvien'] ) ? $_REQUEST['id_nhanvien'] : '';
+            
+            if( is_array($ids) && !empty( $ids ) ) {
                 $ids = implode(',', $ids);
-            }  
-            if ( !empty( $ids ) ) {
-                $wpdb->query( "DELETE FROM {$table_name} WHERE id IN( {$ids} )" );
-            }
+                $wpdb->query( "DELETE FROM {$table_nhanvien} WHERE id_nhanvien IN( {$ids} )" );
+                $wpdb->query( "DELETE FROM {$table_chitiet_duan} WHERE id_nhanvien IN( {$ids} )" );
+                $wpdb->query( "DELETE FROM {$table_chitiet_kynang} WHERE id_nhanvien IN( {$ids} )" );
+            }elseif( $id_nhanvien != '' ){
+                $wpdb->query( "DELETE FROM {$table_nhanvien} WHERE id_nhanvien = {$id_nhanvien}" );
+                $wpdb->query( "DELETE FROM {$table_chitiet_duan} WHERE id_nhanvien = {$id_nhanvien}" );
+                $wpdb->query( "DELETE FROM {$table_chitiet_kynang} WHERE id_nhanvien = {$id_nhanvien}" );
+            } 
+            
+            
         }
     }
     function prepare_items(){
