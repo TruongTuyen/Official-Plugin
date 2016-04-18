@@ -60,16 +60,28 @@ class TT_KyNang extends WP_List_Table{
     
     public function process_bulk_action(){
         global $wpdb;
-        $table_name = $wpdb->prefix . 'kynang';
+        $table_kynang = $wpdb->prefix . 'kynang';
+        $table_chitet_kynang = $wpdb->prefix . 'chitiet_kynang';
         
-        if( $this->current_action() === 'delete' ){
+        if( $this->current_action() === 'delete' && $_REQUEST['page'] == 'ds_ky_nang' ){
             $ids = isset( $_REQUEST['id_kynang'] ) ? $_REQUEST['id_kynang'] : array();
+            $id_kynang = isset( $_REQUEST['id_kynang'] ) ? $_REQUEST['id_kynang'] : '';
+            
             if( is_array( $ids ) && !empty( $ids ) ){
                 $ids = implode( ',', $ids );
-                $wpdb->query( "DELETE FROM $table_name WHERE id_kynang IN($ids)" );
+                $wpdb->query( "DELETE FROM $table_kynang WHERE id_kynang IN($ids)" );
+                $wpdb->query( "DELETE FROM $table_chitet_kynang WHERE id_kynang IN($ids)" );
             }
+            
+            if( $id_kynang != '' ){
+                $wpdb->query( "DELETE FROM $table_kynang WHERE id_kynang = {$id_kynang}" );
+                $wpdb->query( "DELETE FROM $table_chitet_kynang WHERE id_kynang = {$id_kynang}" );
+            }
+            
+            
         }
     }
+    
     
     public function prepare_items(){
         global $wpdb;

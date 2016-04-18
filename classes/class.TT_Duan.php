@@ -81,16 +81,23 @@ class TT_Duan extends WP_List_Table{
 
     function process_bulk_action(){
         global $wpdb;
-        $table_name = $wpdb->prefix . 'duan'; 
+        $table_duan         = $wpdb->prefix . 'duan'; 
+        $table_chitiet_duan = $wpdb->prefix . 'chitiet_duan';
 
-        if ( 'delete' === $this->current_action() ) {
-            $ids = isset($_REQUEST['id_duan']) ? $_REQUEST['id_duan'] : array();
-            if (is_array($ids)) {
-                $ids = implode(',', $ids);
+        if ( 'delete' === $this->current_action() && $_REQUEST['page'] == 'ds_duan' ) {
+            //$ids     = isset( $_REQUEST['id_duan'] ) ? $_REQUEST['id_duan'] : array();
+            $ids     = isset( $_REQUEST['id'] ) ? $_REQUEST['id'] : array();
+            $id_duan = isset( $_REQUEST['id_duan'] ) ? $_REQUEST['id_duan'] : '';
+            
+            if( is_array( $ids ) && !empty( $ids )) {
+                $ids = implode( ',', $ids );
+                $wpdb->query( "DELETE FROM {$table_duan} WHERE id_duan IN( {$ids} )" );
+                $wpdb->query( "DELETE FROM {$table_chitiet_duan} WHERE id_duan IN( {$ids} )" );
+            }elseif( $id_duan != '' ){
+                $wpdb->query( "DELETE FROM {$table_duan} WHERE id_duan = {$id_duan}" );
+                $wpdb->query( "DELETE FROM {$table_chitiet_duan} WHERE id_duan = {$id_duan}" );
             }  
-            if ( !empty( $ids ) ) {
-                $wpdb->query( "DELETE FROM {$table_name} WHERE id IN( {$ids} )" );
-            }
+            
         }
     }
     function prepare_items(){

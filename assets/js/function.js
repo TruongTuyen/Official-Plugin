@@ -52,6 +52,16 @@ $(document).ready(function() {
         $("#chon_cac_duan").chosen({});
         $("#chon_cac_kynang").chosen({});
         
+        $(".delete a").click( function(){
+            $confirm = confirm( "Bạn có chắc chắn muốn xóa dữ liệu này. Hãy cẩn trọng, dữ liệu bị xóa sẽ không thể khôi phục lại!" );
+            
+            if( $confirm == true ){
+                return true;
+            }else{
+                return false;
+            }
+        });
+        
     });
 });
 
