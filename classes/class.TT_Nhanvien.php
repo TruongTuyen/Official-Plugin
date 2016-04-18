@@ -156,7 +156,7 @@ class TT_Nhanvien extends WP_List_Table{
         ));
     }
     
-    public function tt_get_selected_detail_duan( $id_nhanvien ){
+    public static function tt_get_selected_detail_duan( $id_nhanvien ){
         global $wpdb;
         $detail_duan_table = $wpdb->prefix . 'chitiet_duan';
         $duan_table        = $wpdb->prefix . 'duan'; 
@@ -189,7 +189,7 @@ class TT_Nhanvien extends WP_List_Table{
         
     }
     
-    public function tt_get_selected_detail_kynang( $id_nhanvien ){
+    public static function tt_get_selected_detail_kynang( $id_nhanvien ){
        global $wpdb;
        $detai_kynang_table = $wpdb->prefix . 'chitiet_kynang';
        $kynang_table       = $wpdb->prefix . 'kynang';

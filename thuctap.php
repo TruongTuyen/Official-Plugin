@@ -206,8 +206,100 @@ class TT_Teamwork{
         ));
     }  
     
-    public function tt_teamwork_callback(){
+    public function tt_teamwork_callback(){ ?>
+        <div class="wrap">
+            <div class="team_member"  >
+                <h2><?php _e( 'Tất cả các thành viên', 'simple_plugin' ); ?></h2>
+                <?php self::tt_get_team_member(); ?>
+            </div>
+            
+            <div class="team_projects">
+                <h2><?php _e( "Tất cả các dự án", "simple_plugin" ); ?></h2>
+                <?php self::tt_get_project_status(); ?>
+            </div>
+            
+            
+        </div>
+<?php        
+    }//End function tt_teamwork_callback()
+    
+    public static function tt_get_team_member(){
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'nhanvien';
         
+        $all_member =  $wpdb->get_results( "SELECT * FROM $table_name", ARRAY_A );
+        
+        if( is_array( $all_member ) && !empty( $all_member ) ){
+            echo '<div class="team_member owl-carousel" data-nav="true" data-autoplay="false" data-dots="false" data-loop="true" data-margin="10" data-responsive=\'{"0":{"items":4},"600":{"items":4},"1000":{"items":4}}\' >';
+            foreach( $all_member as $key=>$value ){ 
+                $nhanvien_kynang = TT_Nhanvien::tt_get_selected_detail_kynang( $value['id_nhanvien'] );
+                $nhanvien_duan   = TT_Nhanvien::tt_get_selected_detail_duan( $value['id_nhanvien'] );
+                
+        ?>
+                <div class="each_member">
+                    <div class="member_avatar">
+                        <?php if( !empty( $value['avatar'] ) ){
+                            echo '<img src="'. $value['avatar'] .'" />';
+                        }else{
+                            self::tt_default_avatar( $value['gioitinh'] );
+                        } ?>
+                    </div>
+                    <div class="member_info">
+                        <?php if( $value['hoten'] ): ?><p class="member-name"><strong>Họ Tên:</strong> <?php echo '<a href="?page=new_nhanvien&id_nhanvien=' . $value['id_nhanvien'] . '">' . esc_html( $value['hoten'] ) . '</a>'; ?></p><?php endif; ?>
+                        <?php if( $value['namsinh'] ): ?><p class="member-dateofbirth"><strong>Năm sinh:</strong> <?php echo esc_html( $value['namsinh'] ); ?></p><?php endif; ?>
+                        <?php if( $nhanvien_kynang ): ?><p class="member-skills"><strong>Các kỹ năng:</strong> <?php echo $nhanvien_kynang; ?></p><?php endif; ?>
+                        <?php if( $nhanvien_duan ): ?><p class="member-projects"><strong>Các dự án:</strong> <?php echo $nhanvien_duan; ?></p><?php endif; ?>
+                        
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+<?php                
+            }
+            echo "</div>";
+        } 
+        
+    }
+    
+    public static function tt_get_project_status(){
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'duan';
+        
+        $all_member =  $wpdb->get_results( "SELECT * FROM $table_name", ARRAY_A );
+        
+        if( is_array( $all_member ) && !empty( $all_member ) ){
+            echo '<div class="team_project owl-carousel" data-nav="true" data-autoplay="false" data-dots="false" data-loop="true" data-margin="10" data-responsive=\'{"0":{"items":4},"600":{"items":4},"1000":{"items":4}}\' >';
+            foreach( $all_member as $key=>$value ){
+        ?>
+                <div class="each_member">
+                    <div class="prject_preview">
+                        <img src="<?php echo esc_url( TT_DIR_URL . '/assets/img/project_thumb.jpg' ); ?>" />
+                    </div>
+                    <div class="project_info">
+                        <?php if( $value['tenduan'] ): ?><p class="project-name"><strong>Tên dự án:</strong> <?php echo '<a href="?page=new_duan&id_duan=' . $value['id_duan'] . '">' . esc_html( $value['tenduan'] ) . '</a>'; ?></p><?php endif; ?>
+                        <?php if( $value['thoigianbatdau'] ): ?><p class="start_time"><strong>Thời gian:</strong> <?php echo  esc_html( date( 'd-m-Y', strtotime( $value['thoigianbatdau'] ) ) ); ?> <i class="fa fa-long-arrow-right"></i> <?php if( !empty( $value['thoigianketthuc'] ) ){ echo date( 'd-m-Y', strtotime( $value['thoigianketthuc'] ) ); } ?></p><?php endif; ?>
+                        
+                        <?php if( $value['trangthai'] ): ?><p class="projects-status"><strong>Trạng thái:</strong> <?php echo $value['trangthai']; ?></p><?php endif; ?>
+                        <p class="joined_member">
+                            <strong>Các thành viên tham gia:</strong>
+                            <ol>
+                                <li><a href="">CCC</a></li>
+                            </ol>
+                        </p>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+<?php                
+            }
+            echo "</div>";
+        } 
+    }
+    
+    public static function tt_default_avatar( $gender = "Nam" ){
+        if( $gender == "Nữ" || $gender == "nữ" || $gender == "nu" || $gender == "Nu" ){
+            echo '<img src="' . TT_DIR_URL . 'assets/img/female-avatar.jpg'. '" />';
+        }else{
+            echo '<img src="' . TT_DIR_URL . 'assets/img/male-avatar.jpg'. '" />';
+        }
     }
     
     public function register_setting_menu(){
@@ -252,11 +344,15 @@ function enqueue_script(){
     wp_enqueue_script( 'jquery_ui', TT_DIR_URL . 'assets/js/jquery-ui.min.js', array('jquery'), null, true );
     wp_enqueue_script( 'jquer_choosen', TT_DIR_URL . 'assets/js/chosen.jquery.min.js', array('jquery'), null, true );
     wp_enqueue_script( 'jquery_function', TT_DIR_URL . 'assets/js/function.js', array('jquery'), null, true );
+    wp_enqueue_script( 'jquery-carousel', TT_DIR_URL . 'assets/js/owl.carousel.min.js', array( 'jquery' ), null, true );
     
     wp_enqueue_style( 'jquery-ui-css', TT_DIR_URL . 'assets/css/jquery-ui.min.css', false, '' );
     wp_enqueue_style( 'jquery-ui-theme-css', TT_DIR_URL . 'assets/css/jquery-ui.theme.min.css', false, '' );
     wp_enqueue_style( 'jquery-ui-structure-css', TT_DIR_URL . 'assets/css/jquery-ui.structure.min.css', false, '' );
     wp_enqueue_style( 'choosen.min.js', TT_DIR_URL . 'assets/css/chosen.min.css', false, '' );
+    wp_enqueue_style( 'fontawesome-css', TT_DIR_URL .'assets/css/font-awesome.min.css', false, '' );
+    wp_enqueue_style( 'carousel-css', TT_DIR_URL . 'assets/css/owl.carousel.css', false, '' );
+    wp_enqueue_style( 'custom-css', TT_DIR_URL . 'assets/css/custom.css', false, '' );
     
     wp_enqueue_media();
 }

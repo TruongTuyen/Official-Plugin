@@ -62,6 +62,29 @@ $(document).ready(function() {
             }
         });
         
+        function init_carousel(){
+            $('.owl-carousel').each(function(){
+                var owl = $(this);
+                var config     = owl.data();
+                var animateOut = owl.data('animateout');
+                var animateIn  = owl.data('animatein');
+                var slidespeed = owl.data('slidespeed');
+                if(typeof animateOut != 'undefined' ){
+                    config.animateOut = animateOut;
+                }
+                if(typeof animateIn != 'undefined' ){
+                    config.animateIn = animateIn;
+                }
+                if(typeof (slidespeed) != 'undefined' ){
+                    config.smartSpeed = slidespeed;
+                }
+                config.navText = ['<i class="fa fa-angle-left"></i>','<i class="fa fa-angle-right"></i>'],
+                owl.owlCarousel(config);
+            });
+        }
+        
+        init_carousel();
+        
         
     });
 });
