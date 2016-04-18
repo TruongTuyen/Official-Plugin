@@ -52,6 +52,7 @@ class TT_Teamwork{
                 namsinh VARCHAR(4) NOT NULL , 
                 gioitinh VARCHAR(3) NOT NULL ,
                 quequan VARCHAR(225) NOT NULL , 
+                avatar VARCHAR(255) NOT NULL,
                 PRIMARY KEY (id_nhanvien)
             );
             

@@ -88,7 +88,7 @@ jQuery(document).ready(function($){
     // When a file is selected, grab the URL and set it as the text field's value
     mediaUploader.on('select', function() {
       attachment = mediaUploader.state().get('selection').first().toJSON();
-      $('#image-url').val(attachment.url);
+      $('#avatar').val(attachment.url);
     });
     // Open the uploader dialog
     mediaUploader.open();

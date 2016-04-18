@@ -255,6 +255,7 @@ class TT_Nhanvien extends WP_List_Table{
             'namsinh'           => '',
             'gioitinh'          => '',
             'quequan'           => '',
+            'avatar'            => ''
         );
         if ( wp_verify_nonce( $_REQUEST['nonce'], basename(__FILE__)) ) {
             $item = shortcode_atts( $default, $_REQUEST );
@@ -462,10 +463,10 @@ class TT_Nhanvien extends WP_List_Table{
                                     </tr>
                                     <tr class="form-field">
                                         <th valign="top" scope="row">
-                                            <label for="cac_kynang"><?php _e( 'Avatar', 'simple_plugin' ); ?></label>
+                                            <label for="avatar"><?php _e( 'Avatar', 'simple_plugin' ); ?></label>
                                         </th>
                                         <td>
-                                            <input id="image-url" type="text" name="image" class="code" style="width:84%;" />
+                                            <input id="avatar" type="text" name="avatar" class="code" style="width:84%;" <?php if( !empty( $item[ 'avatar' ] ) ){ echo 'value="'. esc_url( $item[ 'avatar' ] ) .'"'; } ?> />
                                             <input id="upload-button" type="button" class="button" value="Chọn Avatar" />
                                         </td>
                                     </tr>
