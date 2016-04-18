@@ -256,6 +256,8 @@ function enqueue_script(){
     wp_enqueue_style( 'jquery-ui-theme-css', TT_DIR_URL . 'assets/css/jquery-ui.theme.min.css', false, '' );
     wp_enqueue_style( 'jquery-ui-structure-css', TT_DIR_URL . 'assets/css/jquery-ui.structure.min.css', false, '' );
     wp_enqueue_style( 'choosen.min.js', TT_DIR_URL . 'assets/css/chosen.min.css', false, '' );
+    
+    wp_enqueue_media();
 }
 add_action( 'admin_enqueue_scripts', 'enqueue_script' );
 

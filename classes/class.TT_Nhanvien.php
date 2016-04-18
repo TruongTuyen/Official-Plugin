@@ -460,10 +460,18 @@ class TT_Nhanvien extends WP_List_Table{
                                             </select>
                                         </td>
                                     </tr>
-                                    
+                                    <tr class="form-field">
+                                        <th valign="top" scope="row">
+                                            <label for="cac_kynang"><?php _e( 'Avatar', 'simple_plugin' ); ?></label>
+                                        </th>
+                                        <td>
+                                            <input id="image-url" type="text" name="image" class="code" style="width:84%;" />
+                                            <input id="upload-button" type="button" class="button" value="Chọn Avatar" />
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
-                            <input type="submit" value="<?php _e( 'Gửi', 'simple_plugin' ); ?>" id="submit" class="button-primary" name="submit">
+                            <input type="submit" value="<?php _e( 'Gửi', 'simple_plugin' ); ?>" id="submit" class="button-primary" name="submit"/>
                         </div>
                     </div>
                 </div>
