@@ -22,7 +22,7 @@ if (!class_exists('WP_List_Table')) {
 }
 
 class TT_Teamwork{
-    public $db_version = '1.0';
+    public $my_db_version = '1.0';
     
     function __construct(){
         register_activation_hook( __FILE__,  array( $this, 'create_table' ) );
@@ -81,15 +81,15 @@ class TT_Teamwork{
     }
     
     public function db_version_option( $version = '1.0' ){
-        add_option( 'db_version', $version );
+        add_option( 'my_db_version', $version );
     }
     
     public function del_db_version(){
-        delete_option( 'db_version' );
+        delete_option( 'my_db_version' );
     }
     
     public function update_db_version( $new_version ){
-        update_option( 'db_version', $new_version );
+        update_option( 'my_db_version', $new_version );
     }
     
     public function delete_table(){
@@ -100,11 +100,11 @@ class TT_Teamwork{
     }
     
     public function check_db_version(){
-        $current_version = get_option( 'db_version' );
-        if( $this->db_version != $current_version ){
+        $current_version = get_option( 'my_db_version' );
+        if( $this->my_db_version != $current_version ){
             $this->delete_table();
             $this->create_table();
-            $this->update_db_version( $this->db_version );
+            $this->update_db_version( $this->my_db_version );
         }
     }
     
