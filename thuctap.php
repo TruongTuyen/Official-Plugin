@@ -1,12 +1,12 @@
 <?php
 /*
-Plugin Name: WordPress Custom Table And WP_List_Table Example
-Description: A wordpress work with custom table in wordpress database and WP_List_Table to display data from database
-Plugin URI: https:localhost
-Author URI: https:localhost
-Author: Truong Tuyen Anh
-License: Public Domain
-Version: 1.0
+Plugin Name: Manage Teamwork
+Description: Wordpress Plugin đơn giản quản lý thông tin một teamwork.
+Plugin URI:  https:localhost
+Author URI:  https:localhost
+Author:      Truong Tuyen Anh
+License:     Public Domain
+Version:     1.0
 Text Domain: simple_plugin
 */
 define( TT_DIR_PATH, plugin_dir_path( __FILE__ ) ); //Lấy ra dường dẫn tuyệt đối tới thu muc của plugin này 
@@ -25,9 +25,9 @@ class TT_Teamwork{
     public $my_db_version = '1.0';
     
     function __construct(){
-        register_activation_hook( __FILE__,  array( $this, 'create_table' ) );
-        register_activation_hook( __FILE__,  array( $this, 'dummy_data' ) );
-        register_deactivation_hook( __FILE__, array( $this, 'delete_table' ) );
+        register_activation_hook( __FILE__,  array( $this, 'create_table' ) );//Đăng ký activation_hook thông qua hàm create_table để tạo ra các bảng dữ liệu cần thiết khi kích hoạt plugin
+        register_activation_hook( __FILE__,  array( $this, 'dummy_data' ) );//Đăng ký activation_hook thông qua hàm dummy_data để chèn dữ liệu mẫu vào các bảng plugin, tránh các lỗi không có dữ liệu
+        register_deactivation_hook( __FILE__, array( $this, 'delete_table' ) );//Đăng ký deactivation_hook để tiến hành xóa các bảng dữ liệu khi ngừng kích hoạt plugin
         
         add_action( 'admin_menu', array( $this, 'register_setting_menu' ) );
         add_action( 'init', array( $this, 'tt_load_languages' ) );
@@ -110,56 +110,181 @@ class TT_Teamwork{
     
     public function dummy_data(){
         global $wpdb;
+        //Dữ liệu mẫu cho bảng duan
         $wpdb->insert( $wpdb->prefix . 'duan', array(
             'id_duan'            => 1,
-            'tenduan'            => 'Website bán hàng 01',
+            'tenduan'            => 'Website bán hàng cho công ty Incomtech',
             'thoigianbatdau'     => '2015-10-16',
             'thoigianketthuc'    => '2015-11-16',
             'trangthai'          => 'Đã hoàn thành', // Đã hoàn thành, Đang triển khai, Chưa hoàn thành, Đã hủy   
-            'ghichu'             => null   
+            'ghichu'             => 'Website bán hàng nội thất nhựa'   
         ));
         $wpdb->insert( $wpdb->prefix . 'duan', array(
             'id_duan'            => 2,
-            'tenduan'            => 'Website bán hàng 02',
+            'tenduan'            => 'Website tin tức nguoivietnews.net',
             'thoigianbatdau'     => '2015-11-10',
             'thoigianketthuc'    => '2015-12-10',
+            'trangthai'          => 'Đã hoàn thành',
+            'ghichu'             => 'website tin tức cho người việt'   
+        ));
+        
+        $wpdb->insert( $wpdb->prefix . 'duan', array(
+            'id_duan'            => 3,
+            'tenduan'            => 'Website công ty Otvina',
+            'thoigianbatdau'     => '2016-01-16',
+            'thoigianketthuc'    => '2016-11-16',
+            'trangthai'          => 'Đang triển khai', // Đã hoàn thành, Đang triển khai, Chưa hoàn thành, Đã hủy   
+            'ghichu'             => null   
+        ));
+        $wpdb->insert( $wpdb->prefix . 'duan', array(
+            'id_duan'            => 4,
+            'tenduan'            => 'Website giới thiệu sách',
+            'thoigianbatdau'     => '2016-03-03',
+            'thoigianketthuc'    => '2016-12-10',
             'trangthai'          => 'Đang triển khai',
-            'ghichu'             => 'ghi chu 01'   
+            'ghichu'             => null 
+        ));
+        
+        $wpdb->insert( $wpdb->prefix . 'duan', array(
+            'id_duan'            => 5,
+            'tenduan'            => 'Website giới thiệu khóa học',
+            'thoigianbatdau'     => '2015-10-16',
+            'thoigianketthuc'    => '2015-11-16',
+            'trangthai'          => 'Chưa hoàn thành', // Đã hoàn thành, Đang triển khai, Chưa hoàn thành, Đã hủy   
+            'ghichu'             => 'Website giới thiệu khóa học cho trẻ: kidscourse.vn -- chưa hoàn thành do yêu cầu của khách hàng'   
+        ));
+        $wpdb->insert( $wpdb->prefix . 'duan', array(
+            'id_duan'            => 6,
+            'tenduan'            => 'Website bất động sản',
+            'thoigianbatdau'     => '2015-10-16',
+            'thoigianketthuc'    => '2015-11-16',
+            'trangthai'          => 'Chưa hoàn thành', // Đã hoàn thành, Đang triển khai, Chưa hoàn thành, Đã hủy   
+            'ghichu'             => 'Website bất động sản: nhadatphongthuy.vn -- chưa hoàn thành do yêu cầu của khách hàng'   
+        ));
+        $wpdb->insert( $wpdb->prefix . 'duan', array(
+            'id_duan'            => 7,
+            'tenduan'            => 'Website giới thiệu khóa học',
+            'thoigianbatdau'     => '2015-11-10',
+            'thoigianketthuc'    => '2015-12-10',
+            'trangthai'          => 'Đã hủy',
+            'ghichu'             => 'website giới thiệu các khóa học đồ họa của công ty truyền thông Grouple -- đã hủy do bên B phá hợp đồng'   
         ));
         
         //du lieu mau cho bang _nhanvien
         $wpdb->insert( $wpdb->prefix . 'nhanvien', array(
             'id_nhanvien'       => 1, 
-            'hoten'             => 'Nguyen Van An', 
+            'hoten'             => 'Nguyễn Văn An', 
             'namsinh'           => '1990', 
             'gioitinh'          => "Nam",
-            'quequan'           => 'Thai Nguyen', 
+            'quequan'           => 'Thái Bình', 
         ));
         $wpdb->insert( $wpdb->prefix . 'nhanvien', array(
             'id_nhanvien'       => 2, 
             'hoten'             => 'Nguyen Thị Ba', 
             'namsinh'           => '1991', 
             'gioitinh'          => "Nữ",
-            'quequan'           => 'Thai Binh', 
+            'quequan'           => 'Cao Bằng', 
         ));
-        
+        $wpdb->insert( $wpdb->prefix . 'nhanvien', array(
+            'id_nhanvien'       => 3, 
+            'hoten'             => 'Phạm Văn Bình', 
+            'namsinh'           => '1996', 
+            'gioitinh'          => "Nam",
+            'quequan'           => 'Quảng Ninh', 
+        ));
+        $wpdb->insert( $wpdb->prefix . 'nhanvien', array(
+            'id_nhanvien'       => 4, 
+            'hoten'             => 'Nguyễn Văn Trường', 
+            'namsinh'           => '1993', 
+            'gioitinh'          => "Nam",
+            'quequan'           => 'Thái Nguyên', 
+        ));
+        $wpdb->insert( $wpdb->prefix . 'nhanvien', array(
+            'id_nhanvien'       => 5, 
+            'hoten'             => 'Trần Bá Trịnh Trọng', 
+            'namsinh'           => '1996', 
+            'gioitinh'          => "Nam",
+            'quequan'           => 'Thái Nguyên', 
+        ));
+        $wpdb->insert( $wpdb->prefix . 'nhanvien', array(
+            'id_nhanvien'       => 6, 
+            'hoten'             => 'Nguyễn Thu Thủy', 
+            'namsinh'           => '1996', 
+            'gioitinh'          => "Nữ",
+            'quequan'           => 'Bắc Giang', 
+        ));
+        $wpdb->insert( $wpdb->prefix . 'nhanvien', array(
+            'id_nhanvien'       => 7, 
+            'hoten'             => 'Phạm Thu Hương', 
+            'namsinh'           => '1996', 
+            'gioitinh'          => "Nữ",
+            'quequan'           => 'Quảng Ninh', 
+        ));
+        $wpdb->insert( $wpdb->prefix . 'nhanvien', array(
+            'id_nhanvien'       => 8, 
+            'hoten'             => 'Nguyễn Văn Quân', 
+            'namsinh'           => '1993', 
+            'gioitinh'          => "Nam",
+            'quequan'           => 'Bắc Ninh', 
+        ));
+        $wpdb->insert( $wpdb->prefix . 'nhanvien', array(
+            'id_nhanvien'       => 9, 
+            'hoten'             => 'Trần Văn Duy', 
+            'namsinh'           => '1995', 
+            'gioitinh'          => "Nam",
+            'quequan'           => 'Thái Nguyên', 
+        ));
         //du lieu mau cho bang _kynang
         $wpdb->insert( $wpdb->prefix . 'kynang', array(
             'id_kynang'         => 1,
             'tenkynang'         => 'HTML',
-            'chuthich'          => 'Ghi chu 01',
+            'chuthich'          => 'Thành thạo HTML',
         ));
         $wpdb->insert( $wpdb->prefix . 'kynang', array(
             'id_kynang'         => 2,
             'tenkynang'         => 'CSS',
-            'chuthich'          => 'Ghi chu 02',
+            'chuthich'          => 'Thành thạo CSS',
         ));
         $wpdb->insert( $wpdb->prefix . 'kynang', array(
             'id_kynang'         => 3,
-            'tenkynang'         => 'PHP',
-            'chuthich'          => 'Ghi chu 03',
+            'tenkynang'         => 'Javascript, jQuery',
+            'chuthich'          => 'Thành thạo Javascript, jQuery',
         ));
-        
+        $wpdb->insert( $wpdb->prefix . 'kynang', array(
+            'id_kynang'         => 4,
+            'tenkynang'         => 'PHP, MySQL',
+            'chuthich'          => 'Thành thạo ngôn ngữ PHP và hệ quản trị CSDL MySQL',
+        ));
+        $wpdb->insert( $wpdb->prefix . 'kynang', array(
+            'id_kynang'         => 5,
+            'tenkynang'         => 'Photoshop',
+            'chuthich'          => 'Sử dụng thành thạo Photoshop',
+        ));
+        $wpdb->insert( $wpdb->prefix . 'kynang', array(
+            'id_kynang'         => 6,
+            'tenkynang'         => 'Android',
+            'chuthich'          => 'Phát triển Android chuyên nghiệp',
+        ));
+        $wpdb->insert( $wpdb->prefix . 'kynang', array(
+            'id_kynang'         => 7,
+            'tenkynang'         => 'iOS',
+            'chuthich'          => 'Phát triển iOS chuyên nghiệp',
+        ));
+        $wpdb->insert( $wpdb->prefix . 'kynang', array(
+            'id_kynang'         => 8,
+            'tenkynang'         => 'PHP Framework CodeIgniter',
+            'chuthich'          => 'Sử dụng thành thạo framework CodeIgniter',
+        ));
+        $wpdb->insert( $wpdb->prefix . 'kynang', array(
+            'id_kynang'         => 9,
+            'tenkynang'         => 'PHP Framework Laravel',
+            'chuthich'          => 'Sử dụng thành thạo framework Laravel',
+        ));
+        $wpdb->insert( $wpdb->prefix . 'kynang', array(
+            'id_kynang'         => 10,
+            'tenkynang'         => 'WordPress',
+            'chuthich'          => 'Phát triển theme và plugin WordPress chuyên nghiệp',
+        ));
         //du lieu mau cho bang: _chitiet_duan
         $wpdb->insert( $wpdb->prefix . 'chitiet_duan', array(
             'id'                => 1,
@@ -187,7 +312,6 @@ class TT_Teamwork{
             'id'                => 1,
     	    'id_kynang'         => 1,
     	    'id_nhanvien'       => 1,
-        	'ghichu'            => "Ghi chu 01"
         ));
         $wpdb->insert( $wpdb->prefix . 'chitiet_kynang', array(
             'id'                => 2,
@@ -209,12 +333,14 @@ class TT_Teamwork{
     public function tt_teamwork_callback(){ ?>
         <div class="wrap">
             <div class="team_member"  >
-                <h2><?php _e( 'Tất cả các thành viên', 'simple_plugin' ); ?></h2>
+                <?php $num_member = self::tt_count_total_members(); ?>
+                <h2><?php _e( 'Tất cả các thành viên: ('. $num_member .')', 'simple_plugin' ); ?></h2>
                 <?php self::tt_get_team_member(); ?>
             </div>
             
             <div class="team_projects">
-                <h2><?php _e( "Tất cả các dự án", "simple_plugin" ); ?></h2>
+                <?php $num_project = self::tt_count_total_projects(); ?>
+                <h2><?php _e( "Tất cả các dự án: ({$num_project})", "simple_plugin" ); ?></h2>
                 <?php self::tt_get_project_status(); ?>
             </div>
             
@@ -222,6 +348,30 @@ class TT_Teamwork{
         </div>
 <?php        
     }//End function tt_teamwork_callback()
+    
+    public static function tt_count_total_members(){
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'nhanvien';
+        $all_member = $wpdb->get_var( "SELECT COUNT(*) FROM {$table_name}" );
+        
+        if( is_numeric( $all_member ) ){
+            return $all_member;
+        }else{
+            return 0;
+        }
+    }
+    
+    public static function tt_count_total_projects(){
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'duan';
+        $all_projects = $wpdb->get_var( "SELECT COUNT(*) FROM {$table_name}" );
+        
+        if( is_numeric( $all_projects ) ){
+            return $all_projects;
+        }else{
+            return 0;
+        }
+    }
     
     public static function tt_get_team_member(){
         global $wpdb;
