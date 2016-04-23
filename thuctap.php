@@ -260,6 +260,37 @@ class TT_Teamwork{
         
     }
     
+    public static function tt_get_member_joined_project( $project_id ){
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'chitiet_duan';
+        $list_member = $wpdb->get_results( $wpdb->prepare( "SELECT id_nhanvien FROM $table_name WHERE id_duan = %d", $project_id ), ARRAY_A );
+        
+        if( is_array( $list_member ) && !empty( $list_member ) ){
+            echo "<ol>";
+            foreach( $list_member as $key=>$value ){
+                echo "<li>";
+                self::tt_get_nhanvien_name( $value['id_nhanvien'] );
+                echo "</li>";
+            }
+            echo "</ol>";
+            
+        }else{
+            echo "Không có thành viên nào tham gia dự án này!";
+        }
+    }
+    
+    public static function tt_get_nhanvien_name( $id_nhanvien ){
+        global $wpdb;
+        $table_name = $wpdb->prefix . "nhanvien";
+        $nhanvien = $wpdb->get_results( $wpdb->prepare( "SELECT id_nhanvien,hoten FROM {$table_name} WHERE id_nhanvien = %d", $id_nhanvien ), ARRAY_A );
+        
+        if( is_array( $nhanvien ) && !empty( $nhanvien ) ){
+            echo sprintf( '<a href="?page=new_nhanvien&id_nhanvien=%d">%s</a>', $nhanvien[0]['id_nhanvien'], $nhanvien[0]['hoten'] );
+        }else{
+            echo __( "Không có dữ liệu", "simple_plugin" );
+        }
+        
+    }
     public static function tt_get_project_status(){
         global $wpdb;
         $table_name = $wpdb->prefix . 'duan';
@@ -281,9 +312,7 @@ class TT_Teamwork{
                         <?php if( $value['trangthai'] ): ?><p class="projects-status"><strong>Trạng thái:</strong> <?php echo $value['trangthai']; ?></p><?php endif; ?>
                         <p class="joined_member">
                             <strong>Các thành viên tham gia:</strong>
-                            <ol>
-                                <li><a href="">CCC</a></li>
-                            </ol>
+                            <?php $list_ids = self::tt_get_member_joined_project( $value['id_duan'] ); ?>
                         </p>
                     </div>
                     <div class="clearfix"></div>
