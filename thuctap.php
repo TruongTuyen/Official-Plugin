@@ -495,7 +495,7 @@ class TT_Teamwork{
     }
     
     public function tt_load_languages(){
-        load_plugin_textdomain( 'simple_plugin', false, dirname(plugin_basename(__FILE__) ));
+        load_plugin_textdomain( 'simple_plugin', false, dirname(plugin_basename(__FILE__) ) . '/languages' );
     }
     
     public static function tt_selected( $select, $value ){
